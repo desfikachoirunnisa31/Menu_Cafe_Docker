@@ -1,0 +1,33 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build and start containers
+        run: docker compose up -d --build
+
+      - name: Wait for application to be ready
+        run: sleep 15
+
+      - name: Run automated test (health check)
+        run: |
+          chmod +x tests/test.sh
+          ./tests/test.sh
+
+      - name: Show logs if test fails
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down
