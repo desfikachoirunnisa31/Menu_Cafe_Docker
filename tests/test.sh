@@ -5,7 +5,7 @@
 
 set -e
 
-URL="http://localhost:8080/health.php"
+URL="http://localhost:8081/health.php"
 
 echo "Menjalankan test endpoint: $URL"
 
