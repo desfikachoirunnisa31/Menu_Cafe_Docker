@@ -6,7 +6,7 @@ CREATE TABLE menu (
     nama_menu VARCHAR(100),
     harga INT,
     gambar VARCHAR(255), -- Nanti diarahkan ke Cloud Storage/Object Storage
-    kategori ENUM('Makanan', 'Minuman')
+    kategori VARCHAR(50) NOT NULL
 );
 
 INSERT INTO menu (nama_menu, harga, gambar, kategori) VALUES 
