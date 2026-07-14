@@ -26,8 +26,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
-      retries: 10
-    restart: unless-stopped
+      retries: 5
 
   phpmyadmin:
     image: phpmyadmin:latest
