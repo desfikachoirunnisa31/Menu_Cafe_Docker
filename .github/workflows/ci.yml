@@ -20,7 +20,7 @@ jobs:
 
       - name: Run automated test (health check)
         run: |
-          chmod +x tests/test.sh
+          chmod +x tests/*.sh
           ./tests/test.sh
 
       - name: Show logs if test fails
