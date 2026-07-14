@@ -1,20 +1,19 @@
 #!/bin/bash
-# Automated test sederhana untuk MENU_CAFE
-# Mengecek apakah endpoint health.php merespons dengan status 200 (OK)
-# Bisa dijalankan lokal: bash tests/test.sh (setelah docker compose up -d)
+# Automated test komprehensif untuk MENU_CAFE
+# Menjalankan 3 skrip pengujian sebagai Quality Gate UAS
 
 set -e
 
-URL="http://localhost:8081/health.php"
+echo "=== MENJALANKAN PIPELINE TEST AUTOMATION ==="
 
-echo "Menjalankan test endpoint: $URL"
+echo "Mengeksekusi TEST 1: Validasi Endpoint Health..."
+bash tests/test1_health.sh
 
-RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+echo "Mengeksekusi TEST 2: Validasi Koneksi Database..."
+bash tests/test2_db_connection.sh
 
-if [ "$RESPONSE" -eq 200 ]; then
-  echo "✅ Test berhasil: endpoint health.php mengembalikan status 200"
-  exit 0
-else
-  echo "❌ Test gagal: endpoint health.php mengembalikan status $RESPONSE (diharapkan 200)"
-  exit 1
-fi
+echo "Mengeksekusi TEST 3: Validasi Operasi CRUD (Tambah Menu)..."
+bash tests/test3_add_menu.sh
+
+echo "=== [SUCCESS] SEMUA PENGUJIAN OTOMATIS BERHASIL DILALUI ==="
+exit 0
