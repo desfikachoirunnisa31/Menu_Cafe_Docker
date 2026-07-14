@@ -1,11 +1,10 @@
-CREATE DATABASE cafe_db;
 USE cafe_db;
 
-CREATE TABLE menu (
+CREATE TABLE IF NOT EXISTS menu (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nama_menu VARCHAR(100),
     harga INT,
-    gambar VARCHAR(255), -- Nanti diarahkan ke Cloud Storage/Object Storage
+    gambar VARCHAR(255),
     kategori VARCHAR(50) NOT NULL
 );
 
