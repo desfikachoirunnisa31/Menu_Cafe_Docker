@@ -3,27 +3,22 @@ services:
     build: .
     container_name: menu_cafe_app
     ports:
-      - "8081:80"
+      - "${APP_PORT}:80"
     depends_on:
       db:
         condition: service_healthy
     environment:
       - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=rootpassword
-      - DB_NAME=cafe_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     restart: unless-stopped
 
   db:
     image: mysql:8.0
     container_name: menu_cafe_db
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      # MYSQL_DATABASE sengaja TIDAK diisi karena db.sql kamu
-      # sudah berisi perintah CREATE DATABASE cafe_db sendiri.
-      # Kalau diisi di sini, akan terjadi konflik "database already exists".
-    #ports:
-      #- "3307:3306"
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
       - ./db.sql:/docker-entrypoint-initdb.d/db.sql
@@ -32,6 +27,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: menu_cafe_phpmyadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=${DB_USER}
+      - PMA_PASSWORD=${DB_ROOT_PASSWORD}
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
     restart: unless-stopped
 
 volumes:
