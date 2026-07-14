@@ -1,26 +1,32 @@
+version: '3.8'
+
 services:
   app:
     build: .
     container_name: menu_cafe_app
     ports:
-      - "${APP_PORT}:80"
+      - "${PORT_APP:-8081}:80"
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
     environment:
       - DB_HOST=db
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-    restart: unless-stopped
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD:-supersecretpassword}
+      - DB_NAME=${DB_NAME:-cafe_db}
 
   db:
     image: mysql:8.0
     container_name: menu_cafe_db
+    restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-supersecretpassword}
+      MYSQL_DATABASE: ${DB_NAME:-cafe_db}
+    ports:
+      - "${PORT_DB:-3307}:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - menu_cafe_db_data:/var/lib/mysql
       - ./db.sql:/docker-entrypoint-initdb.d/db.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -28,19 +34,5 @@ services:
       timeout: 5s
       retries: 5
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: menu_cafe_phpmyadmin
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      - PMA_HOST=db
-      - PMA_USER=${DB_USER}
-      - PMA_PASSWORD=${DB_ROOT_PASSWORD}
-    ports:
-      - "${PHPMYADMIN_PORT}:80"
-    restart: unless-stopped
-
 volumes:
-  db_data:
+  menu_cafe_db_data:
