@@ -2,10 +2,15 @@
 TIMESTAMP=$(date +%s)
 MENU_NAME="TestMenu_$TIMESTAMP"
 
-curl -s -X POST http://localhost:8081/tambah.php \
-  -d "nama_menu=$MENU_NAME" \
-  -d "harga=10000" \
-  -d "kategori=Minuman" > /dev/null
+# Create a temporary test image
+echo "test" > /tmp/test_image.jpg
+
+curl -s -X POST http://localhost:8081/proses.php \
+  -F "nama_menu=$MENU_NAME" \
+  -F "harga=10000" \
+  -F "kategori=Minuman" \
+  -F "gambar=@/tmp/test_image.jpg" \
+  -F "tambah=1" > /dev/null
 
 sleep 1
 
